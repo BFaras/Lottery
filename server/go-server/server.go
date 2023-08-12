@@ -2,6 +2,7 @@ package main
 
 import (
 	"go-server/graph"
+	"go-server/graph/resolvers"
 	"log"
 	"net/http"
 	"os"
@@ -19,7 +20,7 @@ func main() {
 		port = defaultPort
 	}
 
-	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
+	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &resolvers.Resolver{}}))
 
 	// Apply CORS middleware to handle all routes
 	corsOptions := handlers.AllowedOrigins([]string{"https://studio.apollographql.com"})
