@@ -7,7 +7,6 @@ package resolvers
 import (
 	"context"
 	"go-server/graph/model"
-	"go-server/graph/resolvers"
 )
 
 // GetpPet is the resolver for the getpPet field.
