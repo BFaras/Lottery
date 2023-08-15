@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"go-server/graph"
 	"go-server/graph/resolvers"
 	"log"
@@ -10,6 +11,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	_ "github.com/lib/pq" // Import the PostgreSQL driver
 )
 
 const defaultPort = "8080"
@@ -20,7 +22,19 @@ func main() {
 		port = defaultPort
 	}
 
-	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &resolvers.Resolver{}}))
+	// Connect to the PostgreSQL database
+
+	connectionString := "user=postgres dbname=postgres password=123456 host=localhost port=32775  sslmode=disable"
+	db, err := sql.Open("postgres", connectionString)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{
+		Resolvers: &resolvers.Resolver{
+			DB: db,
+		},
+	}))
 
 	// Apply CORS middleware to handle all routes
 	corsOptions := handlers.AllowedOrigins([]string{"https://studio.apollographql.com"})
@@ -40,4 +54,5 @@ func main() {
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, router)) // Use the router for serving
+
 }

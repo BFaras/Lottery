@@ -6,6 +6,7 @@ require (
 	github.com/99designs/gqlgen v0.17.36
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
+	github.com/lib/pq v1.10.9
 	github.com/vektah/gqlparser/v2 v2.5.8
 )
 

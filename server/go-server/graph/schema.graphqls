@@ -3,6 +3,17 @@
 # https://gqlgen.com/getting-started/
 
 
+type UserCart {
+    UserId: ID!
+    Username: String
+    Password: String
+    DateOfBirth: String
+    Age: Int
+    Email: String
+    CartNumber: Int
+}
+
+
 type Person {
   id: Int!
   name: String!
@@ -17,5 +28,8 @@ type Pet {
 type Query {
   getPerson: [Person!]!
   getpPet: [Pet!]!
+  getUserCart:[UserCart!]!
 }
+
+
 
