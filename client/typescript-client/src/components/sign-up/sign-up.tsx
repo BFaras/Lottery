@@ -3,13 +3,13 @@ import React from 'react';
 import { Navigation } from '../navigation/navigation';
 import { About } from '../about/about';
 import { NavLink } from 'react-router-dom';
-import { LogInDialog } from './log-in-dialog';
+import { SignUpDialog } from './sign-up-dialog';
 
 
 
 
 
-function LogIn() {
+function SignUp() {
     return (
         <Grid
             container
@@ -22,17 +22,17 @@ function LogIn() {
                 overflow: "hidden"
             }}
         >
-            <LogInDialog />
+            <SignUpDialog />
         </Grid>
     );
 }
 
 
-export function LogInView(){
+export function SignUpView(){
     return(
         <Grid >
             <Navigation></Navigation>
-            <LogIn></LogIn>
+            <SignUp></SignUp>
         </Grid>
     )
 }
