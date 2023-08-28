@@ -6,47 +6,63 @@ package resolvers
 
 import (
 	"context"
-	"fmt"
 	"go-server/graph"
 	"go-server/graph/model"
 )
 
-// GetPerson is the resolver for the getPerson field.
-func (r *queryResolver) GetPerson(ctx context.Context) ([]*model.Person, error) {
-	panic(fmt.Errorf("not implemented: GetPerson - getPerson"))
-}
+// CreateUserCart is the resolver for the createUserCart field.
+func (r *mutationResolver) CreateUserCart(ctx context.Context, userCart model.UserCartInput) (*model.UserCart, error) {
 
-// GetpPet is the resolver for the getpPet field.
-func (r *queryResolver) GetpPet(ctx context.Context) ([]*model.Pet, error) {
-	panic(fmt.Errorf("not implemented: GetpPet - getpPet"))
+	insertStatement := `
+	INSERT INTO lottery.UserCart (UserID, Username, Password, DateOfBirth, Age, Email, CartNumber)
+	VALUES ($1, $2, $3, $4, $5, $6, $7)
+	RETURNING UserID, Username, Password, DateOfBirth, Age, Email, CartNumber
+    `
+	// Execute the insert statement
+	var insertedUserCart model.UserCart
+	err := r.DB.QueryRow(
+		insertStatement,
+		userCart.UserID,
+		userCart.Username,
+		userCart.Password,
+		userCart.DateOfBirth,
+		userCart.Age,
+		userCart.Email,
+		userCart.CartNumber,
+	).Scan(
+		&insertedUserCart.UserID,
+		&insertedUserCart.Username,
+		&insertedUserCart.Password,
+		&insertedUserCart.DateOfBirth,
+		&insertedUserCart.Age,
+		&insertedUserCart.Email,
+		&insertedUserCart.CartNumber,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &insertedUserCart, nil
 }
 
 // GetUserCart is the resolver for the getUserCart field.
-func (r *queryResolver) GetUserCart(ctx context.Context) ([]*model.UserCart, error) {
-	rows, err := r.DB.Query("SELECT * FROM lottery.UserCart")
+func (r *queryResolver) GetUserCart(ctx context.Context, id string) (*model.UserCart, error) {
+	row := r.DB.QueryRow("SELECT * FROM lottery.UserCart WHERE UserId=$1", id)
+
+	var userCart model.UserCart
+	err := row.Scan(&userCart.UserID, &userCart.Username, &userCart.Password, &userCart.DateOfBirth, &userCart.Age, &userCart.Email, &userCart.CartNumber)
 	if err != nil {
-		fmt.Println("error1")
-		fmt.Println(err)
+		return nil, err
 	}
 
-	var userCarts []*model.UserCart
-	for rows.Next() { // Iterate as long as there are more rows
-		var userCart model.UserCart
-		err := rows.Scan(&userCart.UserID, &userCart.Username, &userCart.Password, &userCart.DateOfBirth, &userCart.Age, &userCart.Email, &userCart.CartNumber)
-		if err != nil {
-			fmt.Println("error2")
-		}
-		userCarts = append(userCarts, &userCart)
-	}
-
-	if err := rows.Err(); err != nil {
-		fmt.Println("error3")
-	}
-
-	return userCarts, nil
+	return &userCart, nil
 }
+
+// Mutation returns graph.MutationResolver implementation.
+func (r *Resolver) Mutation() graph.MutationResolver { return &mutationResolver{r} }
 
 // Query returns graph.QueryResolver implementation.
 func (r *Resolver) Query() graph.QueryResolver { return &queryResolver{r} }
 
+type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }

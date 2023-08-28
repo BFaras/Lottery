@@ -3,33 +3,33 @@
 # https://gqlgen.com/getting-started/
 
 
+input UserCartInput {
+    UserId: ID!
+    Username: String!
+    Password: String!
+    DateOfBirth: String!
+    Age: Int!
+    Email: String!
+    CartNumber: Int!
+}
+
+
 type UserCart {
     UserId: ID!
-    Username: String
-    Password: String
-    DateOfBirth: String
-    Age: Int
-    Email: String
-    CartNumber: Int
-}
-
-
-type Person {
-  id: Int!
-  name: String!
-  pet: Pet
-}
-
-type Pet {
-  id: Int!
-  name: String!
+    Username: String!
+    Password: String!
+    DateOfBirth: String!
+    Age: Int!
+    Email: String!
+    CartNumber: Int!
 }
 
 type Query {
-  getPerson: [Person!]!
-  getpPet: [Pet!]!
-  getUserCart:[UserCart!]!
+  getUserCart(id: ID!):UserCart!
 }
 
+type Mutation{
+  createUserCart(userCart: UserCartInput!):UserCart!
+}
 
 

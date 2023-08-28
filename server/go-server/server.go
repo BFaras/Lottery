@@ -29,6 +29,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.Close()
 
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{
 		Resolvers: &resolvers.Resolver{
@@ -37,7 +38,7 @@ func main() {
 	}))
 
 	// Apply CORS middleware to handle all routes
-	corsOptions := handlers.AllowedOrigins([]string{"https://studio.apollographql.com"})
+	corsOptions := handlers.AllowedOrigins([]string{"https://studio.apollographql.com", "http://localhost"})
 	corsMiddleware := handlers.CORS(
 		corsOptions,
 		handlers.AllowedMethods([]string{"GET", "POST", "OPTIONS"}),

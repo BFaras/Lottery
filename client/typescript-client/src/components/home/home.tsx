@@ -1,13 +1,36 @@
 import { Grid, Typography, Button } from '@mui/material';
 import React from 'react';
 import { Navigation } from '../navigation/navigation';
-import { About } from '../about/about';
 import { NavLink } from 'react-router-dom';
+import {gql} from '@apollo/client/core'
+import {useQuery} from '@apollo/client/react'
 
-
+const GET_DATA = gql`
+  query GetUserCart($getUserCartId: ID!) {
+  getUserCart(id: $getUserCartId) {
+    Age
+    CartNumber
+    DateOfBirth
+    Email
+    Password
+    UserId
+    Username
+  }
+}
+`;
 
 function HomeView() {
+    const { loading, error, data } = useQuery(GET_DATA, {
+        variables: 
+        { getUserCartId: "f7abf9f3-e581-4b6b-8e9b-64fe9771b380" },
+      });
 
+    React.useEffect(()=>{
+        console.log(error)
+        if (data){
+            console.log(data)
+        }
+    },[data,loading])
 
 
     return (
