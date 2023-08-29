@@ -38,7 +38,7 @@ func main() {
 	}))
 
 	// Apply CORS middleware to handle all routes
-	corsOptions := handlers.AllowedOrigins([]string{"https://studio.apollographql.com", "http://localhost"})
+	corsOptions := handlers.AllowedOrigins([]string{"https://studio.apollographql.com", "http://localhost:3000"})
 	corsMiddleware := handlers.CORS(
 		corsOptions,
 		handlers.AllowedMethods([]string{"GET", "POST", "OPTIONS"}),
