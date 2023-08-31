@@ -25,14 +25,6 @@ function HomeView() {
         { getUserCartId: "f7abf9f3-e581-4b6b-8e9b-64fe9771b380" },
       });
 
-    React.useEffect(()=>{
-        console.log(error)
-        if (data){
-            console.log(data)
-        }
-    },[data,loading])
-
-
     return (
         <Grid container style={{ display: 'flex', flexDirection: 'column', backgroundColor: "#181938", height: '90vh', overflow: "hidden" }}>
             <Grid item xs={12} sx={{ ml: "5%", mt: "5%", }}>

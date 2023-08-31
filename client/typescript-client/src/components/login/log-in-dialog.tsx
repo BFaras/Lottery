@@ -1,9 +1,39 @@
+import { gql, useQuery } from '@apollo/client';
 import { Button, Grid, TextField, Typography } from '@mui/material';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+
+
+interface UserCartLogin{
+    userName:String,
+    password:String
+}
+const useGetAccountQuery = gql`
+  query GetUserCart($getUserCartId: ID!) {
+  getUserCart(id: $getUserCartId) {
+    Age
+    CartNumber
+    DateOfBirth
+    Email
+    Password
+    UserId
+    Username
+  }
+}
+`;
+
 
 
 export function LogInDialog() {
+    const navigate = useNavigate()
 
+    const { loading, error, data } = useQuery(useGetAccountQuery, {
+        variables: 
+        {
+            password: "qwertyuiop12",
+            username: "mobendt"
+          },
+      });
+;
 
     return (
         <Grid item style={{ display: "flex", flexDirection: "column", backgroundColor: "#fefefe", alignItems: "center", borderRadius: "12px", marginTop: "5%", height: "450px", width:  "400px" }}>

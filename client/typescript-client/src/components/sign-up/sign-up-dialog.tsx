@@ -12,6 +12,8 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateField } from "@mui/x-date-pickers/DateField";
+import { gql, useMutation } from "@apollo/client";
+import { useNavigate } from "react-router-dom";
 
 interface UserCart {
   UserId: string;
@@ -23,9 +25,24 @@ interface UserCart {
   CartNumber: number;
 }
 
+const useCreateAccountMutation = gql`
+mutation Mutation($userCart: UserCartInput!) {
+    createUserCart(userCart: $userCart) {
+      Age
+      CartNumber
+      DateOfBirth
+      Email
+      Password
+      UserId
+    }
+  }
+`;
+
 const MAX_CART_NUMBER = 99999999;
 
 export function SignUpDialog() {
+  const navigate = useNavigate()
+  
   const [validationErrors, setValidationErrors] = useState<{
     [key: string]: string | null;
   }>({
@@ -45,6 +62,22 @@ export function SignUpDialog() {
     CartNumber: Math.floor(Math.random() * MAX_CART_NUMBER),
   } as UserCart);
 
+  const [createAccountMutation, { data:accountData }] = useMutation(useCreateAccountMutation, {
+        variables: 
+        {
+          userCart: {
+            "Age": newUserCart.Age,
+            "CartNumber": newUserCart.CartNumber,
+            "DateOfBirth": newUserCart.DateOfBirth,
+            "UserId": newUserCart.UserId,
+            "Email": newUserCart.Email,
+            "Username": newUserCart.Username,
+            "Password": newUserCart.Password
+          }
+        },
+      });
+
+
   function _checkInput(
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     label: string
@@ -60,7 +93,6 @@ export function SignUpDialog() {
   }
 
   function _updateForm(value: string | number, label: string) {
-    console.log(value,label)
     setUserCart((prevUserCart) => ({
         ...prevUserCart,
         [label]: value,
@@ -118,9 +150,13 @@ export function SignUpDialog() {
     }
   };
 
-  React.useEffect(()=>{
-     console.log(newUserCart)
-  },[newUserCart])
+  function createAnAccount(){
+      createAccountMutation().then((data)=>{
+        if(data){
+          navigate("/")
+        }
+      })
+  }
 
 
   return (
@@ -204,6 +240,7 @@ export function SignUpDialog() {
             newUserCart.Username === "" ||
             newUserCart.Email === "" || newUserCart.Age === 0
           }
+          onClick={()=>createAnAccount()}
         >
           <Typography
             variant="button"

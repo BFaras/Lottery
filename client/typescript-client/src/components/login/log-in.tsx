@@ -4,12 +4,11 @@ import { Navigation } from '../navigation/navigation';
 import { About } from '../about/about';
 import { NavLink } from 'react-router-dom';
 import { LogInDialog } from './log-in-dialog';
-
-
-
+import { gql, useQuery } from '@apollo/client';
 
 
 function LogIn() {
+
     return (
         <Grid
             container
