@@ -12,7 +12,6 @@ import (
 
 // CreateUserCart is the resolver for the createUserCart field.
 func (r *mutationResolver) CreateUserCart(ctx context.Context, userCart model.UserCartInput) (*model.UserCart, error) {
-
 	insertStatement := `
 	INSERT INTO lottery.UserCart (UserID, Username, Password, DateOfBirth, Age, Email, CartNumber)
 	VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -46,8 +45,8 @@ func (r *mutationResolver) CreateUserCart(ctx context.Context, userCart model.Us
 }
 
 // GetUserCart is the resolver for the getUserCart field.
-func (r *queryResolver) GetUserCart(ctx context.Context, id string) (*model.UserCart, error) {
-	row := r.DB.QueryRow("SELECT * FROM lottery.UserCart WHERE UserId=$1", id)
+func (r *queryResolver) GetUserCart(ctx context.Context, username string, password string) (*model.UserCart, error) {
+	row := r.DB.QueryRow("SELECT * FROM lottery.UserCart WHERE UserName =$1 and Password =$2", username, password)
 
 	var userCart model.UserCart
 	err := row.Scan(&userCart.UserID, &userCart.Username, &userCart.Password, &userCart.DateOfBirth, &userCart.Age, &userCart.Email, &userCart.CartNumber)

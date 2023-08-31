@@ -50,7 +50,7 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		GetUserCart func(childComplexity int, id string) int
+		GetUserCart func(childComplexity int, username string, password string) int
 	}
 
 	UserCart struct {
@@ -68,7 +68,7 @@ type MutationResolver interface {
 	CreateUserCart(ctx context.Context, userCart model.UserCartInput) (*model.UserCart, error)
 }
 type QueryResolver interface {
-	GetUserCart(ctx context.Context, id string) (*model.UserCart, error)
+	GetUserCart(ctx context.Context, username string, password string) (*model.UserCart, error)
 }
 
 type executableSchema struct {
@@ -108,7 +108,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetUserCart(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.GetUserCart(childComplexity, args["username"].(string), args["password"].(string)), true
 
 	case "UserCart.Age":
 		if e.complexity.UserCart.Age == nil {
@@ -318,14 +318,23 @@ func (ec *executionContext) field_Query_getUserCart_args(ctx context.Context, ra
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+	if tmp, ok := rawArgs["username"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("username"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["id"] = arg0
+	args["username"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["password"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["password"] = arg1
 	return args, nil
 }
 
@@ -452,7 +461,7 @@ func (ec *executionContext) _Query_getUserCart(ctx context.Context, field graphq
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetUserCart(rctx, fc.Args["id"].(string))
+		return ec.resolvers.Query().GetUserCart(rctx, fc.Args["username"].(string), fc.Args["password"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -923,11 +932,14 @@ func (ec *executionContext) _UserCart_CartNumber(ctx context.Context, field grap
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*int)
 	fc.Result = res
-	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+	return ec.marshalNInt2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UserCart_CartNumber(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2743,7 +2755,7 @@ func (ec *executionContext) unmarshalInputUserCartInput(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Username"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2752,7 +2764,7 @@ func (ec *executionContext) unmarshalInputUserCartInput(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Password"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2761,7 +2773,7 @@ func (ec *executionContext) unmarshalInputUserCartInput(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("DateOfBirth"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2770,7 +2782,7 @@ func (ec *executionContext) unmarshalInputUserCartInput(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Age"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			data, err := ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2779,7 +2791,7 @@ func (ec *executionContext) unmarshalInputUserCartInput(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Email"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2788,7 +2800,7 @@ func (ec *executionContext) unmarshalInputUserCartInput(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CartNumber"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			data, err := ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2971,6 +2983,9 @@ func (ec *executionContext) _UserCart(ctx context.Context, sel ast.SelectionSet,
 			}
 		case "CartNumber":
 			out.Values[i] = ec._UserCart_CartNumber(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3350,6 +3365,21 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
+func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
+	res, err := graphql.UnmarshalInt(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
+	res := graphql.MarshalInt(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
 func (ec *executionContext) unmarshalNInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
 	res, err := graphql.UnmarshalInt(v)
 	return &res, graphql.ErrorOnPath(ctx, err)
@@ -3702,22 +3732,6 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 		return graphql.Null
 	}
 	res := graphql.MarshalBoolean(*v)
-	return res
-}
-
-func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := graphql.UnmarshalInt(v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	res := graphql.MarshalInt(*v)
 	return res
 }
 

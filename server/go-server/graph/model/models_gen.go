@@ -3,11 +3,11 @@
 package model
 
 type UserCartInput struct {
-	UserID      string  `json:"UserId"`
-	Username    *string `json:"Username,omitempty"`
-	Password    *string `json:"Password,omitempty"`
-	DateOfBirth *string `json:"DateOfBirth,omitempty"`
-	Age         *int    `json:"Age,omitempty"`
-	Email       *string `json:"Email,omitempty"`
-	CartNumber  *int    `json:"CartNumber,omitempty"`
+	UserID      string `json:"UserId"`
+	Username    string `json:"Username"`
+	Password    string `json:"Password"`
+	DateOfBirth string `json:"DateOfBirth"`
+	Age         int    `json:"Age"`
+	Email       string `json:"Email"`
+	CartNumber  int    `json:"CartNumber"`
 }

@@ -25,7 +25,7 @@ type UserCart {
 }
 
 type Query {
-  getUserCart(id: ID!):UserCart!
+  getUserCart(username: String! ,password: String! ):UserCart!
 }
 
 type Mutation{
