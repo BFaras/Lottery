@@ -6,6 +6,7 @@ package resolvers
 
 import (
 	"context"
+	"fmt"
 	"go-server/graph"
 	"go-server/graph/model"
 )
@@ -46,11 +47,13 @@ func (r *mutationResolver) CreateUserCart(ctx context.Context, userCart model.Us
 
 // GetUserCart is the resolver for the getUserCart field.
 func (r *queryResolver) GetUserCart(ctx context.Context, username string, password string) (*model.UserCart, error) {
+	fmt.Println(username, password)
 	row := r.DB.QueryRow("SELECT * FROM lottery.UserCart WHERE UserName =$1 and Password =$2", username, password)
-
+	fmt.Println(row)
 	var userCart model.UserCart
 	err := row.Scan(&userCart.UserID, &userCart.Username, &userCart.Password, &userCart.DateOfBirth, &userCart.Age, &userCart.Email, &userCart.CartNumber)
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 
