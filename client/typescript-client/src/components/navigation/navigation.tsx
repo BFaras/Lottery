@@ -7,7 +7,8 @@ export function Navigation() {
 
     return (
         <React.Fragment>
-            <Grid container style={{ display: 'flex', justifyContent: "space-between", flexDirection: 'row', backgroundColor: "#181938", height: '10vh', overflow: "hidden" }} >
+            <Grid container style={{ display: 'flex', justifyContent: "space-between", flexDirection: 'row', backgroundColor: "#181938", height: '10vh', overflow: "hidden",
+                position:'sticky',top:'0' }} >
                 <Grid item xs={6} sx={{ border: " 1 px solid yellow", display: 'flex', alignItems: "center", justifyContent: "flex-start", flexDirection: 'row', gap: "25px" }}>
                     <NavLink to="/" style={{ textDecoration: 'none' }}>
                         <Button variant="contained" color='secondary' sx={{ height: "35px", ml: "2vw" }}>

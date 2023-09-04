@@ -1,7 +1,6 @@
 import { Grid ,Typography ,Button} from '@mui/material';
 import React from 'react';
 import { Navigation } from '../navigation/navigation';
-import { About } from '../about/about';
 import { NavLink } from 'react-router-dom';
 import { LogInDialog } from './log-in-dialog';
 import { gql, useQuery } from '@apollo/client';

@@ -1,10 +1,6 @@
 import { Grid ,Typography ,Button} from '@mui/material';
-import React from 'react';
 import { Navigation } from '../navigation/navigation';
-import { About } from '../about/about';
-import { NavLink } from 'react-router-dom';
 import { SignUpDialog } from './sign-up-dialog';
-import { gql } from '@apollo/client';
 
 
 
